@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pole View</title>
+  <style>
+    #pano {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="pano"></div>
+
+  <script>
+    function getURLParameter(name) {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    function initialize() {
+      var apiKey = getURLParameter('api_key');
+      var latitude = getURLParameter('lat');
+      var longitude = getURLParameter('lng');
+      var title = getURLParameter('title');
+      var markerTitle = getURLParameter('title');
+
+      if (apiKey && latitude && longitude) {
+        var script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=initMap';
+        document.body.appendChild(script);
+      }
+
+      window.initMap = function() {
+        var panorama = new google.maps.StreetViewPanorama(
+          document.getElementById('pano'),
+          {
+            position: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
+            pov: {heading: 165, pitch: 0},
+            zoom: 1
+          }
+        );
+
+        if (title) {
+          document.title = title;
+        }
+
+        if (markerTitle) {
+          var marker = new google.maps.Marker({
+            position: {lat: parseFloat(latitude), lng: parseFloat(longitude)},
+            map: panorama,
+            title: markerTitle
+          });
+        }
+      };
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js"></script>
+  <script>
+    initialize();
+  </script>
+</body>
+</html>
+
